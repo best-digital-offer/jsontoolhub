@@ -14,7 +14,7 @@
   const examples = {
     people: [{ name: 'Ada Lovelace', role: 'Engineer', address: { city: 'London', country: 'UK' }, skills: ['math', 'computing'] }, { name: 'Grace Hopper', role: 'Computer scientist', address: { city: 'New York', country: 'US' }, skills: ['compilers'] }],
     nested: [{ id: 1, customer: { name: 'Asha', region: 'South' }, items: [{ sku: 'P-1', qty: 2 }, { sku: 'P-2', qty: 1 }] }, { id: 2, customer: { name: 'Mika', region: 'West' }, items: [] }],
-    simple: { project: 'sample', enabled: true, count: 3, tags: ['local', 'JSON'], details: { owner: 'ToolStation', note: null } },
+    simple: { project: 'sample', enabled: true, count: 3, tags: ['local', 'JSON'], details: { owner: 'JSONToolHub', note: null } },
     products: [{ id: 101, title: 'Notebook', price: 4.5, available: true }, { id: 102, title: 'Pen, blue', price: 1.25, available: false }],
   };
 

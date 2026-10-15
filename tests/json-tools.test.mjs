@@ -115,6 +115,18 @@ test('production build has 25 static article routes and valid canonical metadata
   assert.ok(sitemap.includes(`${config.siteUrl}/blog/json/json-formatter-guide/`));
 });
 
+test('project homepage is the JSONToolHub tools directory with working project paths', () => {
+  const config = JSON.parse(fs.readFileSync(path.join(root, 'site-config.json'), 'utf8'));
+  const html = fs.readFileSync(path.join(root, '_site/index.html'), 'utf8');
+  assert.match(html, /<h1>Free online JSON tools for developers<\/h1>/);
+  assert.ok(html.includes(`<link rel="canonical" href="${config.siteUrl}/">`));
+  assert.ok(html.includes('href="tools/json/formatter/"'));
+  assert.ok(html.includes('src="assets/json-tools.js"'));
+  assert.doesNotMatch(html, /ToolStation/);
+  assert.equal(fs.existsSync(path.join(root, '_site/tools/word-counter.html')), false);
+  assert.equal(fs.existsSync(path.join(root, '_site/tools/json/formatter/index.html')), true);
+});
+
 test('each article has at least 1,000 non-boilerplate editorial words', () => {
   const sources = fs.readdirSync(path.join(root, 'content/articles')).filter(name => name.endsWith('.md'));
   assert.equal(sources.length, 25);

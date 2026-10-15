@@ -1,4 +1,4 @@
-// Service Worker for ToolStation.world
+// Service Worker for JSONToolHub
 // Provides offline functionality and performance optimization
 
 const CACHE_NAME = 'toolstation-v1';

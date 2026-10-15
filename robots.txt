@@ -1,4 +1,4 @@
-# Robots.txt for ToolStation.world
+# Robots.txt for JSONToolHub
 # Updated: December 2024
 
 # Allow all crawlers to access all content
@@ -19,7 +19,7 @@ Allow: /ads.txt
 # Crawl-delay: 1
 
 # Sitemaps
-Sitemap: https://toolstation.world/sitemap.xml
+Sitemap: https://best-digital-offer.github.io/jsontoolhub/sitemap.xml
 
 # Additional directives for major search engines
 User-agent: Googlebot

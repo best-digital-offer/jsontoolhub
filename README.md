@@ -1,6 +1,6 @@
-# ToolStation.world
+# JSONToolHub
 
-ToolStation is an existing static tools website extended with browser-side JSON utilities and practical JSON guides. The new JSON conversion and validation work runs in the page without a backend, database, Supabase, Vercel, or paid API. The production site is built as static files for GitHub Pages.
+JSONToolHub is a static website for browser-side JSON formatting, validation, comparison, conversion, and practical guides. The tools run in the visitor's browser without a backend, database, Supabase, Vercel, or paid API.
 
 ## Local build and tests
 
@@ -11,13 +11,13 @@ npm run build
 npm test
 ```
 
-The build writes the deployable website to `_site/`. It regenerates the internal keyword map from `planning/keyword-research.csv`, creates the JSON tool pages, renders the article sources into static HTML, and creates the sitemap. The original keyword values and their mapping remain in `planning/`, which is excluded from `_site/` so keyword metrics are not public.
+The build writes the deployable website to `_site/`. It creates 37 JSON tool pages, renders 25 practical guides, and creates the sitemap. Local keyword research files are optional and excluded from the published output and repository.
 
 To preview `_site/`, serve it with any static file server. Do not deploy the repository root; publish only `_site/`.
 
 ## GitHub Pages
 
-The workflow at `.github/workflows/static.yml` builds the site and publishes `_site/` when a commit reaches `main` or when manually started from GitHub Actions. In the repository's **Settings → Pages**, select **GitHub Actions** as the build and deployment source. The workflow uses the standard Pages artifact and deployment actions. Configure the repository's existing custom domain in Pages if desired and keep its DNS records pointed at GitHub Pages.
+The workflow at `.github/workflows/static.yml` builds and tests the site for GitHub Pages. In the repository's **Settings → Pages**, select **GitHub Actions** as the publishing source to deploy the generated `_site/` artifact. The project-site URLs use the `/jsontoolhub/` path prefix.
 
 Publishing changes to the default branch deploys them publicly. Review the generated output and repository diff before merging or pushing to `main`. A branch push does not deploy under the included workflow.
 

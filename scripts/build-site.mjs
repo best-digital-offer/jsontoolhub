@@ -17,16 +17,18 @@ if (fs.existsSync(path.join(root, 'planning/keyword-research.csv'))) run('map-ke
 else console.log('Keyword source CSV is not present; skipped private keyword-map regeneration.');
 run('build-json-pages.mjs');
 
-const excluded = new Set(['.git','.github','planning','content','scripts','data','tests','node_modules','_site','outputs','work']);
+const excluded = new Set(['.git','.github','blog','planning','content','scripts','data','tests','node_modules','_site','outputs','work','tools']);
+const excludedFiles = new Set(['ADSENSE-CHECKLIST.md','README.md','SEO-README.md','package.json','.replit','replit.md','bmi.html','emi.html','image-compress.html','image-to-pdf.html','jpg-png.html','qr.html','text-case.html','youtube-thumb.html','word-counter.html','word-counter-new.html']);
 function copyTree(src, dest) {
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     if (excluded.has(entry.name) || entry.name.startsWith('.DS_Store')) continue;
     const from = path.join(src, entry.name), to = path.join(dest, entry.name);
     if (entry.isDirectory()) { fs.mkdirSync(to, { recursive: true }); copyTree(from, to); }
-    else if (!['package-lock.json'].includes(entry.name)) fs.copyFileSync(from, to);
+    else if (!['package-lock.json'].includes(entry.name) && !excludedFiles.has(entry.name)) fs.copyFileSync(from, to);
   }
 }
 copyTree(root, out);
+copyTree(path.join(root, 'tools/json'), path.join(out, 'tools/json'));
 
 const articlesDir = path.join(root, 'content/articles');
 const articles = fs.readdirSync(articlesDir).filter(name => name.endsWith('.md')).map(file => {
@@ -106,17 +108,23 @@ collect(out);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].sort().map(url => `  <url><loc>${esc(url)}</loc></url>`).join('\n')}\n</urlset>\n`;
 fs.writeFileSync(path.join(out, 'sitemap.xml'), sitemap);
 
+const hubPage = fs.readFileSync(path.join(out, 'json/index.html'), 'utf8')
+  .replace(/(href|src)="\.\.\//g, '$1="')
+  .replaceAll(`${config.siteUrl}/json/`, `${config.siteUrl}/`);
+fs.writeFileSync(path.join(out, 'index.html'), hubPage);
+
 const basePath = String(config.basePath || '').replace(/\/$/, '');
 if (basePath) {
+  const basePathPattern = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   function rewriteProjectPaths(dir) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const file = path.join(dir, entry.name);
       if (entry.isDirectory()) { rewriteProjectPaths(file); continue; }
       if (!/\.(?:html|css|js|xml|txt|webmanifest)$/i.test(entry.name)) continue;
-      let text = fs.readFileSync(file, 'utf8').replaceAll('https://toolstation.world', config.siteUrl);
-      text = text.replace(/\b(href|src|action|poster)=(['"])\/(?!\/)/gi, `$1=$2${basePath}/`);
-      text = text.replace(/url\(\s*(['"]?)\/(?!\/)/gi, `url($1${basePath}/`);
-      text = text.replace(/(['"])\/assets\//g, `$1${basePath}/assets/`);
+      let text = fs.readFileSync(file, 'utf8').replaceAll('https://toolstation.world', config.siteUrl).replaceAll('ToolStation.world', config.brand).replaceAll('ToolStation', config.brand);
+      text = text.replace(new RegExp(`\\b(href|src|action|poster)=(["'])\\/(?!${basePathPattern}(?:/|["'])|\\/)`, 'gi'), `$1=$2${basePath}/`);
+      text = text.replace(new RegExp(`url\\(\\s*(["']?)\\/(?!${basePathPattern}(?:/|["'])|\\/)`, 'gi'), `url($1${basePath}/`);
+      text = text.replace(new RegExp(`(["'])\\/(?!${basePathPattern}/)assets/`, 'g'), `$1${basePath}/assets/`);
       fs.writeFileSync(file, text);
     }
   }
